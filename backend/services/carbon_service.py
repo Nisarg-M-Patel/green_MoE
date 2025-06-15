@@ -33,23 +33,35 @@ class EIACarbonService:
         self.cache = {}
         self.cache_duration = timedelta(minutes=30)  # EIA updates hourly, cache for 30min
         
-        # EPA emission factors (lbs CO2/MWh)
+        # EPA emission factors (lbs CO2/MWh) - Updated to match EIA API fuel codes
         # Source: EPA eGRID 2021 data
         self.emission_factors = {
-            "coal": 2249,
-            "petroleum": 1672, 
-            "natural_gas": 898,
-            "other_gas": 898,  # EIA sometimes uses this
-            "nuclear": 0,
-            "conventional_hydroelectric": 0,
-            "wind": 0,
-            "solar": 0,
-            "geothermal": 0,
-            "biomass": 230,    # Some emissions from biomass
-            "other_renewables": 50,  # Conservative estimate
-            "other": 500,      # Unknown sources - assume moderate
-            "pumped_storage": 0,  # Hydroelectric storage
-            "batteries": 0     # Battery storage (grid-charged)
+            # EIA fuel codes
+            "col": 2249,      # coal
+            "pet": 1672,      # petroleum  
+            "ng": 898,        # natural gas
+            "oth": 500,       # other/unknown - conservative estimate
+            "nuc": 0,         # nuclear
+            "wat": 0,         # conventional hydroelectric (water)
+            "ps": 0,          # pumped storage hydro
+            "wnd": 0,         # wind
+            "sun": 0,         # solar
+            "geo": 0,         # geothermal
+            "bio": 230,       # biomass - some emissions
+            "bat": 0,         # battery storage (assume grid-charged, no direct emissions)
+            
+            # Alternative spellings that might appear
+            "oil": 1672,      # oil (same as petroleum)
+            "gas": 898,       # gas (same as natural gas)
+            "hydro": 0,       # hydroelectric
+            "wind": 0,        # wind (alternative spelling)
+            "solar": 0,       # solar (alternative spelling)
+            "nuclear": 0,     # nuclear (alternative spelling)
+            "coal": 2249,     # coal (alternative spelling)
+            "natural_gas": 898, # natural gas (alternative spelling)
+            "biomass": 230,   # biomass (alternative spelling)
+            "geothermal": 0,  # geothermal (alternative spelling)
+            "other": 500,     # fallback
         }
         
         # Map GCP regions to EIA balancing authorities
@@ -145,7 +157,7 @@ class EIACarbonService:
         renewable_percent = self._calculate_renewable_percentage(fuel_mix)
         
         # Get the most recent data hour
-        data_hour = fuel_mix[0].fuel_type if fuel_mix else "unknown"  # Simplified
+        data_hour = datetime.now().strftime("%Y-%m-%d %H:00")
         
         reading = CarbonReading(
             gcp_region=gcp_region,
@@ -154,7 +166,7 @@ class EIACarbonService:
             renewable_percent=renewable_percent,
             fuel_mix=fuel_mix,
             timestamp=datetime.now(),
-            data_hour=datetime.now().strftime("%Y-%m-%d %H:00")
+            data_hour=data_hour
         )
         
         # Cache the result
@@ -246,10 +258,10 @@ class EIACarbonService:
         weighted_emissions = 0.0
         
         for fuel in fuel_mix:
-            # Normalize fuel type name for lookup
-            fuel_key = fuel.fuel_type.lower().replace("-", "_").replace(" ", "_")
+            # Use the fuel type directly (already cleaned in parsing)
+            fuel_key = fuel.fuel_type.lower()
             
-            # Get emission factor (default to moderate if unknown)
+            # Get emission factor - now matches EIA codes
             emission_factor = self.emission_factors.get(fuel_key, 500)
             
             # Weight by generation share
@@ -263,10 +275,17 @@ class EIACarbonService:
         return round(carbon_intensity_g_per_kwh, 1)
 
     def _calculate_renewable_percentage(self, fuel_mix: List[FuelGeneration]) -> float:
-        """Calculate percentage of renewable generation"""
+        """Calculate percentage of renewable generation - Updated for EIA codes"""
+        # Updated to use EIA fuel codes
         renewable_fuels = {
-            "wind", "solar", "conventional_hydroelectric", "geothermal", 
-            "biomass", "other_renewables", "pumped_storage"
+            "wnd",    # wind
+            "sun",    # solar  
+            "wat",    # conventional hydroelectric
+            "ps",     # pumped storage hydro
+            "geo",    # geothermal
+            "bio",    # biomass (technically renewable)
+            # Alternative spellings that might appear
+            "wind", "solar", "hydro", "geothermal", "biomass"
         }
         
         total_generation = sum(fuel.generation_mwh for fuel in fuel_mix)

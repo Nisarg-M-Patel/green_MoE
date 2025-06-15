@@ -13,13 +13,12 @@ Most people use ChatGPT-4 ($20/month) for trivial tasks like:
 
 **Result**: Massive energy waste and overpriced convenience.
 
-## Our Solution
+## The Solution
 
 1. **Right-sized models**: Grammar Expert (100M), Email Expert (7B), Search Expert (7B)
-2. **Green routing**: Real-time routing to renewable energy datacenters
-3. **Fair pricing**: $5/month = $5 worth of actual compute
+2. **Green routing**: Real-time routing to low intensity energy regions
 
-## What We Handle
+## What this can handle
 
 **Text Tasks Only** - No code generation, no images, no complex agentic workflows.
 
@@ -36,11 +35,7 @@ Most people use ChatGPT-4 ($20/month) for trivial tasks like:
 
 ## Pricing
 
-**$5/month gets you:**
-- ~5,000 grammar checks
-- ~1,000 email drafts  
-- ~625 search queries
-- Mixed usage: ~1,500-2,000 requests
+**tbd**
 
 **No speed upgrades** - everything routes to the lowest carbon intensive available region.
 
@@ -50,7 +45,7 @@ Most people use ChatGPT-4 ($20/month) for trivial tasks like:
 - **tbd%+ renewable energy** from real-time grid optimization
 - **Full transparency**: See your CO2 savings and energy sources
 
-## What Makes Us Different
+## What makes this different
 
 ### **Mission-Driven**
 I optimize for reducing energy usage, not inference time. No speed tiers, no premium features - just sustainable AI.
@@ -60,9 +55,6 @@ Instead of one massive model doing everything poorly, I am using task-specific m
 
 ### **No Compromises**
 Every request goes to the least carbon intensive region available. Response times: 3-20 seconds depending on how far the request needs to go.
-
-
-**Limited Beta** - US-only, gradually onboarding users.
 
 ---
 

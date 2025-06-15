@@ -7,6 +7,6 @@ class TaskResponse(BaseModel):
     result: str
     task_type: str
     region: str
-    carbon_intensity: int
+    carbon_intensity: float
     carbon_saved: str
     response_time: float
